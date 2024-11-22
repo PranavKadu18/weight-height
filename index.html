@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weight Predictor</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Weight Prediction</h1>
+        <div class="prediction-form">
+            <input type="number" id="height" placeholder="Enter height (cm)" step="0.1">
+            <button onclick="getPrediction()">Predict Weight</button>
+            <div id="result" class="result-box"></div>
+        </div>
+    </div>
+
+    <script>
+        async function getPrediction() {
+            const height = document.getElementById('height').value;
+            const resultDiv = document.getElementById('result');
+
+            if (!height) {
+                resultDiv.innerHTML = 'Please enter a height value';
+                return;
+            }
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ height: parseFloat(height) })
+                });
+
+                const data = await response.json();
+                resultDiv.innerHTML = `Predicted Weight: ${data.weight.toFixed(2)} kg`;
+            } catch (error) {
+                resultDiv.innerHTML = 'Error: Could not get prediction';
+            }
+        }
+    </script>
+</body>
+</html>
